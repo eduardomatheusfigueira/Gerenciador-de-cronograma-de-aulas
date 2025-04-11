@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma de Aulas</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-center text-indigo-700">Cronograma de Aulas</h1>
+            <p class="text-center text-gray-600">Sistema de gerenciamento de oficinas, educadores e turmas</p>
+        </header>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <nav class="flex flex-wrap mb-8">
+                <button class="nav-button bg-indigo-600 text-white px-4 py-2 rounded-lg mr-2 mb-2" data-target="dashboard">Dashboard</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="oficinas">Oficinas</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="educadores">Educadores</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="turmas">Turmas</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="agendamentos">Agendamentos</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="relatorios">Relatórios</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="configuracoes">Configurações</button>
+            </nav>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Dashboard</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-blue-100 p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-blue-800 mb-2">Oficinas</h3>
+                        <p class="text-3xl font-bold" id="dashboard-oficinas">0</p>
+                    </div>
+                    <div class="bg-green-100 p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-green-800 mb-2">Educadores</h3>
+                        <p class="text-3xl font-bold" id="dashboard-educadores">0</p>
+                    </div>
+                    <div class="bg-yellow-100 p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-yellow-800 mb-2">Agendamentos</h3>
+                        <p class="text-3xl font-bold" id="dashboard-agendamentos">0</p>
+                    </div>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold mb-3 text-indigo-700">Próximos Agendamentos</h3>
+                    <div class="bg-white shadow rounded-lg overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Oficina</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Educador</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Turma</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horário</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="proximos-agendamentos">
+                                <tr>
+                                    <td class="px-6 py-4 text-gray-500 text-sm" colspan="5">Nenhum agendamento próximo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Oficinas Section -->
+            <div id="oficinas" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Gerenciar Oficinas</h2>
+                
+                <div class="bg-indigo-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-bold text-lg mb-2">Adicionar Nova Oficina</h3>
+                    <form id="form-oficina" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nome da Oficina</label>
+                                <input type="text" id="oficina-nome" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Carga Horária (horas)</label>
+                                <input type="number" id="oficina-carga" min="1" step="0.5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Descrição (opcional)</label>
+                            <textarea id="oficina-descricao" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" rows="2"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Adicionar Oficina
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white shadow rounded-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Carga Horária</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="lista-oficinas">
+                            <tr>
+                                <td class="px-6 py-4 text-gray-500 text-sm" colspan="4">Nenhuma oficina cadastrada</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Educadores Section -->
+            <div id="educadores" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Gerenciar Educadores</h2>
+                
+                <div class="bg-indigo-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-bold text-lg mb-2">Adicionar Novo Educador</h3>
+                    <form id="form-educador" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nome do Educador</label>
+                                <input type="text" id="educador-nome" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="educador-email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Telefone (opcional)</label>
+                            <input type="tel" id="educador-telefone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                        </div>
+                        <div>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Adicionar Educador
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white shadow rounded-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefone</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="lista-educadores">
+                            <tr>
+                                <td class="px-6 py-4 text-gray-500 text-sm" colspan="4">Nenhum educador cadastrado</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Turmas Section -->
+            <div id="turmas" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Gerenciar Turmas</h2>
+                
+                <div class="bg-indigo-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-bold text-lg mb-2">Adicionar Nova Turma</h3>
+                    <form id="form-turma" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nome da Turma</label>
+                                <input type="text" id="turma-nome" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Período</label>
+                                <input type="text" id="turma-periodo" placeholder="Ex: Manhã, Tarde, 2023.1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Observações (opcional)</label>
+                            <textarea id="turma-observacoes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" rows="2"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Adicionar Turma
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white shadow rounded-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Observações</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="lista-turmas">
+                            <tr>
+                                <td class="px-6 py-4 text-gray-500 text-sm" colspan="4">Nenhuma turma cadastrada</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Agendamentos Section -->
+            <div id="agendamentos" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Gerenciar Agendamentos</h2>
+                
+                <div class="bg-indigo-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-bold text-lg mb-2">Adicionar Novo Agendamento</h3>
+                    <form id="form-agendamento" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Oficina</label>
+                                <select id="agendamento-oficina" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                                    <option value="">Selecione uma oficina</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Educador</label>
+                                <select id="agendamento-educador" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                                    <option value="">Selecione um educador</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Turma</label>
+                                <select id="agendamento-turma" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                                    <option value="">Selecione uma turma</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Data(s) da Aula</label>
+                                <div class="mt-1 flex rounded-md shadow-sm">
+                                    <input type="text" id="agendamento-datas-display" class="flex-1 block w-full rounded-none rounded-l-md border-gray-300 bg-gray-100 border p-2 cursor-not-allowed" placeholder="Nenhuma data selecionada" readonly>
+                                    <button type="button" id="abrir-modal-datas" class="relative -ml-px inline-flex items-center space-x-2 rounded-r-md border border-gray-300 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                        <i class="fas fa-calendar-alt text-gray-400"></i>
+                                        <span>Selecionar</span>
+                                    </button>
+                                </div>
+                                <input type="hidden" id="agendamento-datas-hidden"> <!-- Hidden input to store selected dates -->
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Horário de Início</label>
+                                <input type="time" id="agendamento-inicio" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Horário de Término</label>
+                                <input type="time" id="agendamento-fim" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Observações (opcional)</label>
+                            <textarea id="agendamento-observacoes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" rows="2"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Adicionar Agendamento
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-lg">Visualizar Agendamentos</h3>
+                        <div class="flex space-x-2">
+                            <button id="view-list" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 text-sm">Lista</button>
+                            <button id="view-calendar" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 text-sm">Calendário</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter controls -->
+                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Filtrar por Oficina</label>
+                                <select id="filtro-oficina" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                    <option value="">Todas as oficinas</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Filtrar por Educador</label>
+                                <select id="filtro-educador" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                    <option value="">Todos os educadores</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Filtrar por Turma</label>
+                                <select id="filtro-turma" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                    <option value="">Todas as turmas</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Período</label>
+                                <select id="filtro-periodo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                    <option value="todos">Todos</option>
+                                    <option value="futuro">Próximos</option>
+                                    <option value="passado">Passados</option>
+                                    <option value="semana">Esta semana</option>
+                                    <option value="mes">Este mês</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- List view -->
+                    <div id="list-view" class="bg-white shadow rounded-lg overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horário</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Oficina</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Educador</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Turma</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="lista-agendamentos">
+                                <tr>
+                                    <td class="px-6 py-4 text-gray-500 text-sm" colspan="6">Nenhum agendamento encontrado</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Calendar view -->
+                    <div id="calendar-view" class="bg-white shadow rounded-lg p-4 hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <button id="prev-month" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                                <i class="fas fa-chevron-left mr-1"></i> Anterior
+                            </button>
+                            <h3 id="calendar-title" class="text-lg font-bold"></h3>
+                            <button id="next-month" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                                Próximo <i class="fas fa-chevron-right ml-1"></i>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1">
+                            <div class="text-center font-bold bg-gray-100 py-2">Dom</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Seg</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Ter</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Qua</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Qui</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Sex</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Sáb</div>
+                        </div>
+                        <div id="calendar-days" class="grid grid-cols-7 gap-1 mt-1">
+                            <!-- Calendar days will be generated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relatórios Section -->
+            <div id="relatorios" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Relatórios</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-lg mb-4">Carga Horária por Educador</h3>
+                        <div class="flex space-x-3 mb-4">
+                            <select id="relatorio-periodo" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                <option value="todos">Todo o período</option>
+                                <option value="mes">Este mês</option>
+                                <option value="semana">Esta semana</option>
+                            </select>
+                            <button id="gerar-relatorio-educador" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">Gerar Relatório</button>
+                        </div>
+                        <div id="relatorio-educador-result" class="bg-gray-50 p-3 rounded max-h-96 overflow-y-auto">
+                            <p class="text-gray-500">Selecione um período e clique em "Gerar Relatório"</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-lg mb-4">Oficinas mais Agendadas</h3>
+                        <div class="flex space-x-3 mb-4">
+                            <select id="relatorio-periodo-oficinas" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                <option value="todos">Todo o período</option>
+                                <option value="mes">Este mês</option>
+                                <option value="semana">Esta semana</option>
+                            </select>
+                            <button id="gerar-relatorio-oficinas" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">Gerar Relatório</button>
+                        </div>
+                        <div id="relatorio-oficinas-result" class="bg-gray-50 p-3 rounded max-h-96 overflow-y-auto">
+                            <p class="text-gray-500">Selecione um período e clique em "Gerar Relatório"</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-4 rounded-lg shadow mb-8">
+                    <h3 class="font-bold text-lg mb-4">Agendamentos por Turma</h3>
+                    <div class="flex space-x-3 mb-4">
+                        <select id="relatorio-turma" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                            <option value="">Todas as turmas</option>
+                        </select>
+                        <select id="relatorio-periodo-turma" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                            <option value="todos">Todo o período</option>
+                            <option value="mes">Este mês</option>
+                            <option value="semana">Esta semana</option>
+                        </select>
+                        <button id="gerar-relatorio-turma" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">Gerar Relatório</button>
+                    </div>
+                    <div id="relatorio-turma-result" class="bg-gray-50 p-3 rounded max-h-96 overflow-y-auto">
+                        <p class="text-gray-500">Selecione uma turma, um período e clique em "Gerar Relatório"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configurações Section -->
+            <div id="configuracoes" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Configurações</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-lg mb-4">Exportar Dados</h3>
+                        <p class="text-gray-600 mb-4">Exporte todos os dados do sistema para um arquivo JSON que pode ser usado para backup ou transferência.</p>
+                        <button id="exportar-dados" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                            <i class="fas fa-download mr-2"></i> Exportar Dados
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-lg mb-4">Importar Dados</h3>
+                        <p class="text-gray-600 mb-4">Importe dados previamente exportados. <span class="text-red-600 font-bold">Atenção: isso substituirá todos os dados atuais!</span></p>
+                        <div class="flex flex-col space-y-4">
+                            <input type="file" id="importar-arquivo" class="block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded file:border-0
+                                file:text-sm file:font-medium
+                                file:bg-indigo-50 file:text-indigo-700
+                                hover:file:bg-indigo-100">
+                            <button id="importar-dados" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                                <i class="fas fa-upload mr-2"></i> Importar Dados
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-4 rounded-lg shadow mb-8">
+                    <h3 class="font-bold text-lg mb-4">Integrações</h3>
+                    <p class="text-gray-600 mb-4">Configure integrações com outros serviços.</p>
+                    
+                    <div class="border-t border-gray-200 pt-4 mt-4">
+                        <h4 class="font-medium text-gray-700 mb-2">Google Agenda</h4>
+                        <p class="text-gray-600 mb-4">Integre o sistema com o Google Agenda para sincronizar agendamentos.</p>
+                        <button id="conectar-google" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-50">
+                            <i class="fab fa-google text-red-500 mr-2"></i> Conectar com Google
+                        </button>
+                        <p class="text-xs text-gray-500 mt-2">Nota: Esta funcionalidade requer configuração adicional.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="font-bold text-lg mb-4">Limpar Dados</h3>
+                    <p class="text-gray-600 mb-4">Remova todos os dados do sistema. <span class="text-red-600 font-bold">Atenção: Esta ação não pode ser desfeita!</span></p>
+                    <button id="limpar-dados" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                        <i class="fas fa-trash-alt mr-2"></i> Limpar Todos os Dados
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de edição -->
+    <div id="modal-edicao" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-lg w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold" id="modal-titulo">Editar Item</h3>
+                <button id="fechar-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modal-conteudo">
+                <!-- Conteúdo dinâmico do modal -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Seleção de Datas -->
+    <div id="modal-selecao-datas" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-xl w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Selecionar Datas</h3>
+                <button id="fechar-modal-datas" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <button id="prev-month-selecao" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-3 rounded inline-flex items-center text-sm">
+                        <i class="fas fa-chevron-left mr-1"></i> Anterior
+                    </button>
+                    <h4 id="calendar-title-selecao" class="text-md font-bold"></h4>
+                    <button id="next-month-selecao" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-3 rounded inline-flex items-center text-sm">
+                        Próximo <i class="fas fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+                <div class="grid grid-cols-7 gap-1 text-center text-xs font-medium text-gray-500 mb-1">
+                    <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+                </div>
+                <div id="calendar-days-selecao" class="grid grid-cols-7 gap-1">
+                    <!-- Dias do calendário de seleção serão gerados aqui -->
+                </div>
+            </div>
+            <div class="border-t pt-4 flex justify-end space-x-3">
+                 <button type="button" id="cancelar-selecao-datas" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
+                 <button type="button" id="confirmar-selecao-datas" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Confirmar Datas</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Snackbar para notificações -->
+    <div id="snackbar" class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded shadow-lg transform transition-transform duration-300 translate-y-20 opacity-0 z-50">
+        <p id="snackbar-mensagem">Mensagem de notificação</p>
+    </div>
+
+    <script>
+        // Modelo de dados
+        let dados = {
+            oficinas: [],
+            educadores: [],
+            turmas: [],
+            agendamentos: []
+        };
+        
+        // Variáveis globais
+        let currentCalendarDate = new Date(); // Para o calendário principal
+        let currentEditId = null;
+        let currentEditType = null;
+        let currentSelecaoDate = new Date(); // Para o calendário de seleção de datas
+        let selectedDatesTemp = []; // Datas selecionadas temporariamente no modal
+
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carregar dados do localStorage
+            carregarDados();
+            
+            // Configurar navegação
+            setupNavigation();
+            
+            // Configurar forms
+            setupForms();
+            
+            // Configurar eventos de UI
+            setupUIEvents();
+            
+            // Renderizar listas
+            renderizarTudo();
+            
+            // Atualizar o dashboard
+            atualizarDashboard();
+        });
+
+        // Função para carregar dados do localStorage
+        function carregarDados() {
+            const dadosSalvos = localStorage.getItem('gerenciadorOficinasData');
+            if (dadosSalvos) {
+                try {
+                    dados = JSON.parse(dadosSalvos);
+                    // Garantir que IDs sejam números (importante se dados antigos usavam strings)
+                    dados.oficinas.forEach(o => o.id = parseInt(o.id));
+                    dados.educadores.forEach(e => e.id = parseInt(e.id));
+                    dados.turmas.forEach(t => t.id = parseInt(t.id));
+                    dados.agendamentos.forEach(a => {
+                        a.id = parseInt(a.id);
+                        a.oficinaId = parseInt(a.oficinaId);
+                        a.educadorId = parseInt(a.educadorId);
+                        a.turmaId = parseInt(a.turmaId);
+                    });
+                } catch (e) {
+                    console.error("Erro ao carregar dados:", e);
+                    mostrarNotificacao("Erro ao carregar dados salvos", "error");
+                    // Resetar para dados de exemplo se a carga falhar
+                    dados = getDadosExemplo(); 
+                    salvarDados();
+                }
+            } else {
+                // Dados de exemplo para facilitar testes
+                dados = getDadosExemplo();
+                salvarDados();
+            }
+        }
+
+        function getDadosExemplo() {
+             // Usar IDs numéricos desde o início
+            const oficinaExemploId1 = gerarId();
+            const oficinaExemploId2 = gerarId();
+            const oficinaExemploId3 = gerarId();
+            const educadorExemploId1 = gerarId();
+            const educadorExemploId2 = gerarId();
+            const turmaExemploId1 = gerarId();
+            const turmaExemploId2 = gerarId();
+
+            return {
+                oficinas: [
+                    { id: oficinaExemploId1, nome: "Música", cargaHoraria: 20, descricao: "Aulas de teoria musical e prática instrumental" },
+                    { id: oficinaExemploId2, nome: "Teatro", cargaHoraria: 15, descricao: "Expressão corporal e artes cênicas" },
+                    { id: oficinaExemploId3, nome: "Pintura", cargaHoraria: 10, descricao: "Técnicas de pintura em tela" }
+                ],
+                educadores: [
+                    { id: educadorExemploId1, nome: "Ana Silva", email: "ana.silva@exemplo.com", telefone: "(11) 98765-4321" },
+                    { id: educadorExemploId2, nome: "Pedro Santos", email: "pedro.santos@exemplo.com", telefone: "(11) 91234-5678" }
+                ],
+                turmas: [
+                    { id: turmaExemploId1, nome: "Turma A", periodo: "Manhã", observacoes: "Crianças de 7 a 10 anos" },
+                    { id: turmaExemploId2, nome: "Turma B", periodo: "Tarde", observacoes: "Adolescentes de 11 a 14 anos" }
+                ],
+                agendamentos: [
+                    { 
+                        id: gerarId(), 
+                        oficinaId: oficinaExemploId1, 
+                        educadorId: educadorExemploId1, 
+                        turmaId: turmaExemploId1, 
+                        data: new Date().toISOString().split('T')[0], 
+                        horaInicio: "09:00", 
+                        horaFim: "11:00", 
+                        observacoes: "Primeira aula do semestre" 
+                    }
+                ]
+            };
+        }
+
+        // Funções para gerenciar a navegação
+        function setupNavigation() {
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const target = button.dataset.target;
+                    
+                    // Esconder todas as seções
+                    document.querySelectorAll('.section').forEach(section => {
+                        section.classList.add('hidden');
+                    });
+                    
+                    // Mostrar a seção selecionada
+                    document.getElementById(target).classList.remove('hidden');
+                    
+                    // Atualizar estilos dos botões
+                    document.querySelectorAll('.nav-button').forEach(btn => {
+                        btn.classList.remove('bg-indigo-600', 'text-white');
+                        btn.classList.add('bg-gray-300', 'text-gray-800');
+                    });
+                    
+                    button.classList.remove('bg-gray-300', 'text-gray-800');
+                    button.classList.add('bg-indigo-600', 'text-white');
+                });
+            });
+        }
+
+        // Configurar formulários
+        function setupForms() {
+            // Form de Oficina
+            document.getElementById('form-oficina').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const nome = document.getElementById('oficina-nome').value;
+                const cargaHoraria = parseFloat(document.getElementById('oficina-carga').value);
+                const descricao = document.getElementById('oficina-descricao').value;
+                
+                if (!nome || !cargaHoraria) {
+                    mostrarNotificacao("Preencha os campos obrigatórios", "error");
+                    return;
+                }
+                
+                adicionarOficina(nome, cargaHoraria, descricao);
+                e.target.reset();
+            });
+            
+            // Form de Educador
+            document.getElementById('form-educador').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const nome = document.getElementById('educador-nome').value;
+                const email = document.getElementById('educador-email').value;
+                const telefone = document.getElementById('educador-telefone').value;
+                
+                if (!nome) {
+                    mostrarNotificacao("Preencha o nome do educador", "error");
+                    return;
+                }
+                
+                adicionarEducador(nome, email, telefone);
+                e.target.reset();
+            });
+            
+            // Form de Turma
+            document.getElementById('form-turma').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const nome = document.getElementById('turma-nome').value;
+                const periodo = document.getElementById('turma-periodo').value;
+                const observacoes = document.getElementById('turma-observacoes').value;
+                
+                if (!nome) {
+                    mostrarNotificacao("Preencha o nome da turma", "error");
+                    return;
+                }
+                
+                adicionarTurma(nome, periodo, observacoes);
+                e.target.reset();
+            });
+            
+            // Form de Agendamento (com suporte a múltiplas datas via modal)
+            document.getElementById('form-agendamento').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const oficinaId = document.getElementById('agendamento-oficina').value;
+                const educadorId = document.getElementById('agendamento-educador').value;
+                const turmaId = document.getElementById('agendamento-turma').value;
+                const datasInput = document.getElementById('agendamento-datas-hidden').value; // Ler do input hidden
+                const horaInicio = document.getElementById('agendamento-inicio').value;
+                const horaFim = document.getElementById('agendamento-fim').value;
+                const observacoes = document.getElementById('agendamento-observacoes').value;
+
+                if (!oficinaId || !educadorId || !turmaId || !datasInput || !horaInicio || !horaFim) {
+                    mostrarNotificacao("Preencha todos os campos obrigatórios, incluindo a seleção de datas.", "error");
+                    return;
+                }
+
+                // Verificar se o horário de fim é posterior ao início
+                if (horaInicio >= horaFim) {
+                    mostrarNotificacao("O horário de término deve ser posterior ao horário de início", "error");
+                    return;
+                }
+
+                // Processar múltiplas datas
+                const datas = datasInput.split(',')
+                                        .map(d => d.trim())
+                                        .filter(d => d); // Remover strings vazias
+
+                if (datas.length === 0) {
+                const dataFormatada = data.toLocaleDateString('pt-BR');
+                
+                // Verificar se é um agendamento passado
+                const hoje = new Date();
+                hoje.setHours(0, 0, 0, 0);
+                const classeData = data < hoje ? 'text-gray-400' : '';
+                
+                return `
+                    <tr class="${classeData}">
+                        <td class="px-6 py-4 whitespace-nowrap">${dataFormatada}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${agendamento.horaInicio} - ${agendamento.horaFim}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${oficina.nome}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${educador.nome}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${turma.nome}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button class="text-indigo-600 hover:text-indigo-900 mr-3" onclick="abrirEdicaoAgendamento(${agendamento.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-900" onclick="confirmarExclusao('agendamento', ${agendamento.id})">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function abrirEdicaoAgendamento(id) {
+            const agendamento = dados.agendamentos.find(a => a.id === id);
+            if (!agendamento) return;
+            
+            currentEditId = id;
+            currentEditType = 'agendamento';
+            
+            document.getElementById('modal-titulo').textContent = 'Editar Agendamento';
+            document.getElementById('modal-conteudo').innerHTML = `
+                <form id="form-editar-agendamento" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Oficina</label>
+                            <select id="edit-agendamento-oficina" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                                ${dados.oficinas.map(oficina => 
+                                    `<option value="${oficina.id}" ${oficina.id === agendamento.oficinaId ? 'selected' : ''}>${oficina.nome} (${oficina.cargaHoraria}h)</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Educador</label>
+                            <select id="edit-agendamento-educador" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                                ${dados.educadores.map(educador => 
+                                    `<option value="${educador.id}" ${educador.id === agendamento.educadorId ? 'selected' : ''}>${educador.nome}</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Turma</label>
+                        <select id="edit-agendamento-turma" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            ${dados.turmas.map(turma => 
+                                `<option value="${turma.id}" ${turma.id === agendamento.turmaId ? 'selected' : ''}>${turma.nome} ${turma.periodo ? `(${turma.periodo})` : ''}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Data</label>
+                            <input type="date" id="edit-agendamento-data" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required value="${agendamento.data}">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Horário de Início</label>
+                            <input type="time" id="edit-agendamento-inicio" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required value="${agendamento.horaInicio}">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Horário de Término</label>
+                            <input type="time" id="edit-agendamento-fim" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required value="${agendamento.horaFim}">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Observações</label>
+                        <textarea id="edit-agendamento-observacoes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" rows="2">${agendamento.observacoes || ''}</textarea>
+                    </div>
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" id="cancelar-edicao" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
+                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Salvar Alterações</button>
+                    </div>
+                </form>
+            `;
+            
+            document.getElementById('cancelar-edicao').addEventListener('click', fecharModal);
+            document.getElementById('form-editar-agendamento').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const oficinaId = document.getElementById('edit-agendamento-oficina').value;
+                const educadorId = document.getElementById('edit-agendamento-educador').value;
+                const turmaId = document.getElementById('edit-agendamento-turma').value;
+                const data = document.getElementById('edit-agendamento-data').value;
+                const horaInicio = document.getElementById('edit-agendamento-inicio').value;
+                const horaFim = document.getElementById('edit-agendamento-fim').value;
+                const observacoes = document.getElementById('edit-agendamento-observacoes').value;
+                
+                if (!oficinaId || !educadorId || !turmaId || !data || !horaInicio || !horaFim) {
+                    mostrarNotificacao("Preencha todos os campos obrigatórios", "error");
+                    return;
+                }
+                
+                // Verificar se o horário de fim é posterior ao início
+                if (horaInicio >= horaFim) {
+                    mostrarNotificacao("O horário de término deve ser posterior ao horário de início", "error");
+                    return;
+                }
+                
+                const sucesso = editarAgendamento(currentEditId, oficinaId, educadorId, turmaId, data, horaInicio, horaFim, observacoes);
+                if (sucesso) {
+                    fecharModal();
+                }
+            });
+            
+            abrirModal();
+        }
+        
+        function renderizarCalendario() {
+            const calendarTitle = document.getElementById('calendar-title');
+            const calendarDays = document.getElementById('calendar-days');
+            
+            // Definir título do calendário
+            const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            calendarTitle.textContent = `${monthNames[currentCalendarDate.getMonth()]} ${currentCalendarDate.getFullYear()}`;
+            
+            // Calcular primeiro e último dia do mês
+            const firstDay = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), 1);
+            const lastDay = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth() + 1, 0);
+            
+            // Calcular dia da semana do primeiro dia do mês (0 = Domingo, 6 = Sábado)
+            const firstDayWeekday = firstDay.getDay();
+            
+            // Preparar array com os dias do mês
+            let calendarHTML = '';
+            
+            // Dias do mês anterior
+            for (let i = 0; i < firstDayWeekday; i++) {
+                calendarHTML += `<div class="p-2 bg-gray-100 min-h-[100px] text-gray-400 border"></div>`;
+            }
+            
+            // Dias do mês atual
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const currentDate = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), day);
+                const dateString = currentDate.toISOString().split('T')[0];
+                
+                // Filtrar agendamentos deste dia
+                const agendamentosDoDia = dados.agendamentos.filter(a => a.data === dateString);
+                
+                // Verificar se é hoje
+                const isToday = currentDate.toDateString() === new Date().toDateString();
+                const todayClass = isToday ? 'bg-indigo-50 border-indigo-200' : 'bg-white';
+                
+                calendarHTML += `
+                    <div class="p-2 ${todayClass} min-h-[100px] border relative">
+                        <div class="text-right font-bold ${isToday ? 'text-indigo-600' : ''}">${day}</div>
+                        <div class="text-xs mt-1 max-h-[80px] overflow-y-auto">
+                            ${agendamentosDoDia.map(agendamento => {
+                                const oficina = dados.oficinas.find(o => o.id === agendamento.oficinaId) || { nome: "?" };
+                                const educador = dados.educadores.find(e => e.id === agendamento.educadorId) || { nome: "?" };
+                                
+                                return `
+                                    <div class="bg-indigo-100 p-1 mb-1 rounded text-indigo-800 cursor-pointer" onclick="abrirEdicaoAgendamento(${agendamento.id})">
+                                        <div class="font-bold">${agendamento.horaInicio} - ${oficina.nome}</div>
+                                        <div>${educador.nome}</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Preencher dias restantes da última semana
+            const lastDayWeekday = lastDay.getDay();
+            if (lastDayWeekday < 6) {
+                for (let i = lastDayWeekday + 1; i <= 6; i++) {
+                    calendarHTML += `<div class="p-2 bg-gray-100 min-h-[100px] text-gray-400 border"></div>`;
+                }
+            }
+            
+            calendarDays.innerHTML = calendarHTML;
+        }
+
+        // Funções para relatórios
+        function gerarRelatorioEducador() {
+            const periodo = document.getElementById('relatorio-periodo').value;
+            const resultado = document.getElementById('relatorio-educador-result');
+            
+            // Filtrar agendamentos pelo período
+            let agendamentosFiltrados = filtrarAgendamentosPorPeriodo(periodo);
+            
+            // Calcular horas por educador
+            const horasPorEducador = [];
+            
+            dados.educadores.forEach(educador => {
+                const agendamentosEducador = agendamentosFiltrados.filter(a => a.educadorId === educador.id);
+                
+                if (agendamentosEducador.length > 0) {
+                    let totalMinutos = 0;
+                    let oficinasMinistradas = new Set();
+                    let ultimosAgendamentos = [];
+                    
+                    agendamentosEducador.forEach(agendamento => {
+                        // Calcular duração em minutos
+                        const inicio = new Date(`2000-01-01T${agendamento.horaInicio}`);
+                        const fim = new Date(`2000-01-01T${agendamento.horaFim}`);
+                        const duracao = (fim - inicio) / (1000 * 60);
+                        
+                        totalMinutos += duracao;
+                        oficinasMinistradas.add(agendamento.oficinaId);
+                        
+                        // Guardar os últimos 3 agendamentos
+                        if (ultimosAgendamentos.length < 3) {
+                            const oficina = dados.oficinas.find(o => o.id === agendamento.oficinaId) || { nome: "?" };
+                            const data = new Date(agendamento.data);
+                            
+                            ultimosAgendamentos.push({
+                                data: data.toLocaleDateString('pt-BR'),
+                                oficina: oficina.nome,
+                                horario: `${agendamento.horaInicio} - ${agendamento.horaFim}`
+                            });
+                        }
+                    });
+                    
+                    // Ordenar por data mais recente
+                    ultimosAgendamentos.sort((a, b) => {
+                        const dataA = new Date(a.data.split('/').reverse().join('-'));
+                        const dataB = new Date(b.data.split('/').reverse().join('-'));
+                        return dataB - dataA;
+                    });
+                    
+                    horasPorEducador.push({
+                        educador: educador.nome,
+                        horas: (totalMinutos / 60).toFixed(1),
+                        totalAgendamentos: agendamentosEducador.length,
+                        oficinasMinistradas: oficinasMinistradas.size,
+                        ultimosAgendamentos
+                    });
+                }
+            });
+            
+            // Ordenar por horas (decrescente)
+            horasPorEducador.sort((a, b) => parseFloat(b.horas) - parseFloat(a.horas));
+            
+            if (horasPorEducador.length === 0) {
+                resultado.innerHTML = '<p class="text-gray-500">Nenhum dado encontrado para o período selecionado</p>';
+                return;
+            }
+            
+            // Gerar HTML
+            let html = '<div class="space-y-4">';
+            
+            horasPorEducador.forEach(item => {
+                html += `
+                    <div class="border-b pb-4">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-lg">${item.educador}</h4>
+                            <span class="text-2xl font-bold text-indigo-700">${item.horas}h</span>
+                        </div>
+                        <div class="flex text-sm text-gray-600 mt-1">
+                            <div class="mr-4"><i class="far fa-calendar-check mr-1"></i> ${item.totalAgendamentos} agendamentos</div>
+                            <div><i class="fas fa-chalkboard-teacher mr-1"></i> ${item.oficinasMinistradas} oficinas diferentes</div>
+                        </div>
+                        <div class="mt-2">
+                            <p class="text-sm font-medium text-gray-700">Últimos agendamentos:</p>
+                            <ul class="text-sm text-gray-600 mt-1 list-disc pl-5">
+                                ${item.ultimosAgendamentos.map(a => 
+                                    `<li>${a.data} - ${a.oficina} (${a.horario})</li>`
+                                ).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            resultado.innerHTML = html;
+        }
+        
+        function gerarRelatorioOficinas() {
+            const periodo = document.getElementById('relatorio-periodo-oficinas').value;
+            const resultado = document.getElementById('relatorio-oficinas-result');
+            
+            // Filtrar agendamentos pelo período
+            let agendamentosFiltrados = filtrarAgendamentosPorPeriodo(periodo);
+            
+            // Calcular estatísticas por oficina
+            const estatisticasPorOficina = [];
+            
+            dados.oficinas.forEach(oficina => {
+                const agendamentosOficina = agendamentosFiltrados.filter(a => a.oficinaId === oficina.id);
+                
+                if (agendamentosOficina.length > 0) {
+                    let totalMinutos = 0;
+                    let educadoresUnicos = new Set();
+                    let turmasUnicas = new Set();
+                    
+                    agendamentosOficina.forEach(agendamento => {
+                        // Calcular duração em minutos
+                        const inicio = new Date(`2000-01-01T${agendamento.horaInicio}`);
+                        const fim = new Date(`2000-01-01T${agendamento.horaFim}`);
+                        const duracao = (fim - inicio) / (1000 * 60);
+                        
+                        totalMinutos += duracao;
+                        educadoresUnicos.add(agendamento.educadorId);
+                        turmasUnicas.add(agendamento.turmaId);
+                    });
+                    
+                    estatisticasPorOficina.push({
+                        oficina: oficina.nome,
+                        cargaHoraria: oficina.cargaHoraria,
+                        totalAgendamentos: agendamentosOficina.length,
+                        horasMinistradas: (totalMinutos / 60).toFixed(1),
+                        educadores: educadoresUnicos.size,
+                        turmas: turmasUnicas.size
+                    });
+                }
+            });
+            
+            // Ordenar por número de agendamentos (decrescente)
+            estatisticasPorOficina.sort((a, b) => b.totalAgendamentos - a.totalAgendamentos);
+            
+            if (estatisticasPorOficina.length === 0) {
+                resultado.innerHTML = '<p class="text-gray-500">Nenhum dado encontrado para o período selecionado</p>';
+                return;
+            }
+            
+            // Gerar HTML
+            let html = `
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Oficina</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Carga Horária</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Agendamentos</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Horas Ministradas</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Educadores</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Turmas</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+            `;
+            
+            estatisticasPorOficina.forEach(item => {
+                html += `
+                    <tr>
+                        <td class="px-4 py-2 whitespace-nowrap font-medium">${item.oficina}</td>
+                        <td class="px-4 py-2 whitespace-nowrap">${item.cargaHoraria}h</td>
+                        <td class="px-4 py-2 whitespace-nowrap">${item.totalAgendamentos}</td>
+                        <td class="px-4 py-2 whitespace-nowrap">${item.horasMinistradas}h</td>
+                        <td class="px-4 py-2 whitespace-nowrap">${item.educadores}</td>
+                        <td class="px-4 py-2 whitespace-nowrap">${item.turmas}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            resultado.innerHTML = html;
+        }
+        
+        function gerarRelatorioTurma() {
+            const turmaId = document.getElementById('relatorio-turma').value;
+            const periodo = document.getElementById('relatorio-periodo-turma').value;
+            const resultado = document.getElementById('relatorio-turma-result');
+            
+            if (!turmaId) {
+                resultado.innerHTML = '<p class="text-gray-500">Selecione uma turma para gerar o relatório</p>';
+                return;
+            }
+            
+            // Filtrar agendamentos pelo período e turma
+            let agendamentosFiltrados = filtrarAgendamentosPorPeriodo(periodo);
+            agendamentosFiltrados = agendamentosFiltrados.filter(a => a.turmaId === parseInt(turmaId));
+            
+            // Ordenar por data
+            agendamentosFiltrados.sort((a, b) => {
+                const dateA = new Date(a.data);
+                const dateB = new Date(b.data);
+                return dateA - dateB;
+            });
+            
+            if (agendamentosFiltrados.length === 0) {
+                resultado.innerHTML = '<p class="text-gray-500">Nenhum agendamento encontrado para esta turma no período selecionado</p>';
+                return;
+            }
+            
+            const turma = dados.turmas.find(t => t.id === parseInt(turmaId)) || { nome: "Desconhecida" };
+            
+            // Calcular estatísticas
+            let totalMinutos = 0;
+            const oficinasPorDia = {};
+            const oficinasUnicas = new Set();
+            const educadoresUnicos = new Set();
+            
+            agendamentosFiltrados.forEach(agendamento => {
+                // Calcular duração em minutos
+                const inicio = new Date(`2000-01-01T${agendamento.horaInicio}`);
+                const fim = new Date(`2000-01-01T${agendamento.horaFim}`);
+                const duracao = (fim - inicio) / (1000 * 60);
+                
+                totalMinutos += duracao;
+                oficinasUnicas.add(agendamento.oficinaId);
+                educadoresUnicos.add(agendamento.educadorId);
+                
+                // Agrupar por dia
+                if (!oficinasPorDia[agendamento.data]) {
+                    oficinasPorDia[agendamento.data] = [];
+                }
+                
+                oficinasPorDia[agendamento.data].push(agendamento);
+            });
+            
+            // Gerar HTML
+            let html = `
+                <div class="bg-indigo-50 p-3 rounded-lg mb-4">
+                    <h4 class="font-bold text-lg">${turma.nome}</h4>
+                    <div class="text-sm text-gray-600 mt-1">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div><i class="fas fa-clock mr-1"></i> Total de horas: <span class="font-bold">${(totalMinutos / 60).toFixed(1)}h</span></div>
+                            <div><i class="fas fa-chalkboard mr-1"></i> Oficinas diferentes: <span class="font-bold">${oficinasUnicas.size}</span></div>
+                            <div><i class="fas fa-user-tie mr-1"></i> Educadores diferentes: <span class="font-bold">${educadoresUnicos.size}</span></div>
+                            <div><i class="far fa-calendar-alt mr-1"></i> Dias com oficinas: <span class="font-bold">${Object.keys(oficinasPorDia).length}</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 class="font-bold text-md mb-2">Cronograma de oficinas:</h4>
+                <div class="space-y-4">
+            `;
+            
+            // Listar agendamentos por dia
+            Object.keys(oficinasPorDia).sort().forEach(data => {
+                const agendamentosDia = oficinasPorDia[data];
+                const dataFormatada = new Date(data).toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+                
+                html += `
+                    <div class="border-b pb-3">
+                        <h5 class="font-bold capitalize">${dataFormatada}</h5>
+                        <ul class="mt-2 space-y-2">
+                `;
+                
+                agendamentosDia.forEach(agendamento => {
+                    const oficina = dados.oficinas.find(o => o.id === agendamento.oficinaId) || { nome: "Desconhecida" };
+                    const educador = dados.educadores.find(e => e.id === agendamento.educadorId) || { nome: "Desconhecido" };
+                    
+                    html += `
+                        <li class="flex items-center">
+                            <div class="bg-indigo-100 text-indigo-800 py-1 px-2 rounded text-sm w-[90px] text-center">
+                                ${agendamento.horaInicio} - ${agendamento.horaFim}
+                            </div>
+                            <div class="ml-3">
+                                <div class="font-medium">${oficina.nome}</div>
+                                <div class="text-sm text-gray-600">Educador: ${educador.nome}</div>
+                            </div>
+                        </li>
+                    `;
+                });
+                
+                html += `
+                        </ul>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            resultado.innerHTML = html;
+        }
+        
+        function filtrarAgendamentosPorPeriodo(periodo) {
+            let agendamentosFiltrados = [...dados.agendamentos];
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            
+            if (periodo === 'semana') {
+                const inicioSemana = new Date(hoje);
+                inicioSemana.setDate(hoje.getDate() - hoje.getDay());
+                
+                const fimSemana = new Date(inicioSemana);
+                fimSemana.setDate(inicioSemana.getDate() + 6);
+                
+                agendamentosFiltrados = agendamentosFiltrados.filter(a => {
+                    const dataAgendamento = new Date(a.data);
+                    return dataAgendamento >= inicioSemana && dataAgendamento <= fimSemana;
+                });
+            } else if (periodo === 'mes') {
+                const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+                const fimMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+                
+                agendamentosFiltrados = agendamentosFiltrados.filter(a => {
+                    const dataAgendamento = new Date(a.data);
+                    return dataAgendamento >= inicioMes && dataAgendamento <= fimMes;
+                });
+            }
+            
+            return agendamentosFiltrados;
+        }
+
+        // Funções para configurações
+        function exportarDados() {
+            const dadosJSON = JSON.stringify(dados, null, 2);
+            const blob = new Blob([dadosJSON], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gerenciador-oficinas-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            mostrarNotificacao("Dados exportados com sucesso");
+        }
+        
+        function importarDados() {
+            const fileInput = document.getElementById('importar-arquivo');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                mostrarNotificacao("Selecione um arquivo para importar", "error");
+                return;
+            }
+            
+            if (file.type !== 'application/json') {
+                mostrarNotificacao("O arquivo deve ser do tipo JSON", "error");
+                return;
+            }
+            
+            if (!confirm("A importação substituirá todos os dados atuais. Deseja continuar?")) {
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Verificar se o arquivo tem a estrutura correta
+                    if (!importedData.oficinas || !importedData.educadores || !importedData.turmas || !importedData.agendamentos) {
+                        throw new Error("Estrutura de dados inválida");
+                    }
+                    
+                    dados = importedData;
+                    salvarDados();
+                    renderizarTudo();
+                    mostrarNotificacao("Dados importados com sucesso");
+                    fileInput.value = '';
+                    atualizarDashboard();
+                } catch (error) {
+                    mostrarNotificacao("Erro ao importar dados: formato inválido", "error");
+                    console.error(error);
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function limparDados() {
+            dados = {
+                oficinas: [],
+                educadores: [],
+                turmas: [],
+                agendamentos: []
+            };
+            
+            salvarDados();
+            renderizarTudo();
+            mostrarNotificacao("Todos os dados foram removidos");
+            atualizarDashboard();
+        }
+
+        // Funções utilitárias
+        function gerarId() {
+            return Date.now() + Math.floor(Math.random() * 1000);
+        }
+        
+        function salvarDados() {
+            localStorage.setItem('gerenciadorOficinasData', JSON.stringify(dados));
+        }
+        
+        function renderizarTudo() {
+            renderizarOficinas();
+            renderizarEducadores();
+            renderizarTurmas();
+            renderizarAgendamentos();
+            renderizarCalendario();
+            atualizarSelectsOficinas();
+            atualizarSelectsEducadores();
+            atualizarSelectsTurmas();
+            atualizarProximosAgendamentos();
+        }
+        
+        function confirmarExclusao(tipo, id) {
+            if (confirm(`Tem certeza que deseja excluir este(a) ${tipo}?`)) {
+                switch (tipo) {
+                    case 'oficina':
+                        excluirOficina(id);
+                        break;
+                    case 'educador':
+                        excluirEducador(id);
+                        break;
+                    case 'turma':
+                        excluirTurma(id);
+                        break;
+                    case 'agendamento':
+                        excluirAgendamento(id);
+                        break;
+                }
+            }
+        }
+        
+        function atualizarDashboard() {
+            document.getElementById('dashboard-oficinas').textContent = dados.oficinas.length;
+            document.getElementById('dashboard-educadores').textContent = dados.educadores.length;
+            document.getElementById('dashboard-agendamentos').textContent = dados.agendamentos.length;
+        }
+        
+        function atualizarProximosAgendamentos() {
+            const proximosAgendamentos = document.getElementById('proximos-agendamentos');
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            
+            // Filtrar próximos agendamentos (de hoje em diante)
+            const agendamentosFuturos = dados.agendamentos.filter(a => {
+                const dataAgendamento = new Date(a.data);
+                return dataAgendamento >= hoje;
+            });
+            
+            // Ordenar por data e hora
+            agendamentosFuturos.sort((a, b) => {
+                const dateA = new Date(a.data + 'T' + a.horaInicio);
+                const dateB = new Date(b.data + 'T' + b.horaInicio);
+                return dateA - dateB;
+            });
+            
+            // Limitar a 5 próximos agendamentos
+            const agendamentosRecentes = agendamentosFuturos.slice(0, 5);
+            
+            if (agendamentosRecentes.length === 0) {
+                proximosAgendamentos.innerHTML = `
+                    <tr>
+                        <td class="px-6 py-4 text-gray-500 text-sm" colspan="5">Nenhum agendamento próximo</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            proximosAgendamentos.innerHTML = agendamentosRecentes.map(agendamento => {
+                const oficina = dados.oficinas.find(o => o.id === agendamento.oficinaId) || { nome: "Desconhecida" };
+                const educador = dados.educadores.find(e => e.id === agendamento.educadorId) || { nome: "Desconhecido" };
+                const turma = dados.turmas.find(t => t.id === agendamento.turmaId) || { nome: "Desconhecida" };
+                
+                // Formatar data
+                const data = new Date(agendamento.data);
+                const dataFormatada = data.toLocaleDateString('pt-BR');
+                
+                // Destacar se for hoje
+                const hoje = new Date();
+                hoje.setHours(0, 0, 0, 0);
+                const isHoje = data.getTime() === hoje.getTime();
+                const classeData = isHoje ? 'font-bold text-indigo-700' : '';
+                
+                return `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap ${classeData}">${dataFormatada} ${isHoje ? '(Hoje)' : ''}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${oficina.nome}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${educador.nome}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${turma.nome}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${agendamento.horaInicio} - ${agendamento.horaFim}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // Funções para manipulação de modal
+        function abrirModal() {
+            document.getElementById('modal-edicao').classList.remove('hidden');
+        }
+        
+        function fecharModal() {
+            document.getElementById('modal-edicao').classList.add('hidden');
+            currentEditId = null;
+            currentEditType = null;
+        }
+        
+        // Funções para notificação
+        function mostrarNotificacao(mensagem, tipo = 'success') {
+            const snackbar = document.getElementById('snackbar');
+            const mensagemElement = document.getElementById('snackbar-mensagem');
+            
+            mensagemElement.textContent = mensagem;
+            
+            // Definir cor com base no tipo
+            if (tipo === 'error') {
+                snackbar.classList.remove('bg-gray-800', 'bg-indigo-600');
+                snackbar.classList.add('bg-red-600');
+            } else if (tipo === 'info') {
+                snackbar.classList.remove('bg-gray-800', 'bg-red-600');
+                snackbar.classList.add('bg-indigo-600');
+            } else {
+                snackbar.classList.remove('bg-red-600', 'bg-indigo-600');
+                snackbar.classList.add('bg-gray-800');
+            }
+            
+            // Mostrar snackbar
+            snackbar.classList.remove('translate-y-20', 'opacity-0');
+            
+            // Esconder após 3 segundos
+            setTimeout(() => {
+                snackbar.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

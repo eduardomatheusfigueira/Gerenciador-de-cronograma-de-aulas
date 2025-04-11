@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma de Aulas</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-center text-indigo-700">Cronograma de Aulas</h1>
+            <p class="text-center text-gray-600">Sistema de gerenciamento de oficinas, educadores e turmas</p>
+        </header>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <nav class="flex flex-wrap mb-8">
+                <button class="nav-button bg-indigo-600 text-white px-4 py-2 rounded-lg mr-2 mb-2" data-target="dashboard">Dashboard</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="oficinas">Oficinas</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="educadores">Educadores</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="turmas">Turmas</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="agendamentos">Agendamentos</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="relatorios">Relatórios</button>
+                <button class="nav-button bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2 mb-2" data-target="configuracoes">Configurações</button>
+            </nav>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Dashboard</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-blue-100 p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-blue-800 mb-2">Oficinas</h3>
+                        <p class="text-3xl font-bold" id="dashboard-oficinas">0</p>
+                    </div>
+                    <div class="bg-green-100 p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-green-800 mb-2">Educadores</h3>
+                        <p class="text-3xl font-bold" id="dashboard-educadores">0</p>
+                    </div>
+                    <div class="bg-yellow-100 p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-yellow-800 mb-2">Agendamentos</h3>
+                        <p class="text-3xl font-bold" id="dashboard-agendamentos">0</p>
+                    </div>
+                </div>
+
+                <!-- Dashboard Calendar View -->
+                <div id="dashboard-calendar-view" class="bg-white shadow rounded-lg p-4 mb-8">
+                    <h3 class="text-xl font-bold mb-3 text-indigo-700">Calendário de Agendamentos</h3>
+                    <div class="flex justify-between items-center mb-4">
+                        <button id="dashboard-prev-month" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                            <i class="fas fa-chevron-left mr-1"></i> Anterior
+                        </button>
+                        <h4 id="dashboard-calendar-title" class="text-lg font-bold"></h4>
+                        <button id="dashboard-next-month" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                            Próximo <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-sm">
+                        <div class="text-center font-bold bg-gray-100 py-2">Dom</div>
+                        <div class="text-center font-bold bg-gray-100 py-2">Seg</div>
+                        <div class="text-center font-bold bg-gray-100 py-2">Ter</div>
+                        <div class="text-center font-bold bg-gray-100 py-2">Qua</div>
+                        <div class="text-center font-bold bg-gray-100 py-2">Qui</div>
+                        <div class="text-center font-bold bg-gray-100 py-2">Sex</div>
+                        <div class="text-center font-bold bg-gray-100 py-2">Sáb</div>
+                    </div>
+                    <div id="dashboard-calendar-days" class="grid grid-cols-7 gap-1 mt-1">
+                        <!-- Calendar days will be generated here -->
+                    </div>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold mb-3 text-indigo-700">Próximos Agendamentos</h3>
+                    <div class="bg-white shadow rounded-lg overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Oficina</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Educador</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Turma</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horário</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="proximos-agendamentos">
+                                <tr>
+                                    <td class="px-6 py-4 text-gray-500 text-sm" colspan="5">Nenhum agendamento próximo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Oficinas Section -->
+            <div id="oficinas" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Gerenciar Oficinas</h2>
+                
+                <div class="bg-indigo-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-bold text-lg mb-2">Adicionar Nova Oficina</h3>
+                    <form id="form-oficina" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nome da Oficina</label>
+                                <input type="text" id="oficina-nome" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Carga Horária (horas)</label>
+                                <input type="number" id="oficina-carga" min="1" step="0.5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Descrição (opcional)</label>
+                            <textarea id="oficina-descricao" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" rows="2"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Adicionar Oficina
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white shadow rounded-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Carga Horária</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="lista-oficinas">
+                            <tr>
+                                <td class="px-6 py-4 text-gray-500 text-sm" colspan="4">Nenhuma oficina cadastrada</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Educadores Section -->
+            <div id="educadores" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Gerenciar Educadores</h2>
+                
+                <div class="bg-indigo-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-bold text-lg mb-2">Adicionar Novo Educador</h3>
+                    <form id="form-educador" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nome do Educador</label>
+                                <input type="text" id="educador-nome" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="educador-email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Telefone (opcional)</label>
+                            <input type="tel" id="educador-telefone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                        </div>
+                        <div>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Adicionar Educador
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white shadow rounded-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefone</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="lista-educadores">
+                            <tr>
+                                <td class="px-6 py-4 text-gray-500 text-sm" colspan="4">Nenhum educador cadastrado</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Turmas Section -->
+            <div id="turmas" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Gerenciar Turmas</h2>
+                
+                <div class="bg-indigo-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-bold text-lg mb-2">Adicionar Nova Turma</h3>
+                    <form id="form-turma" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nome da Turma</label>
+                                <input type="text" id="turma-nome" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Período</label>
+                                <input type="text" id="turma-periodo" placeholder="Ex: Manhã, Tarde, 2023.1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Observações (opcional)</label>
+                            <textarea id="turma-observacoes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" rows="2"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Adicionar Turma
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-white shadow rounded-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Período</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Observações</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="lista-turmas">
+                            <tr>
+                                <td class="px-6 py-4 text-gray-500 text-sm" colspan="4">Nenhuma turma cadastrada</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Agendamentos Section -->
+            <div id="agendamentos" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Gerenciar Agendamentos</h2>
+                
+                <div class="bg-indigo-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-bold text-lg mb-2">Adicionar Novo Agendamento</h3>
+                    <form id="form-agendamento" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Oficina</label>
+                                <select id="agendamento-oficina" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                                    <option value="">Selecione uma oficina</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Educador</label>
+                                <select id="agendamento-educador" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                                    <option value="">Selecione um educador</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Turma</label>
+                                <select id="agendamento-turma" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                                    <option value="">Selecione uma turma</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-1">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Datas</label>
+                                <div id="agendamento-datas-container" class="space-y-2">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="date" name="agendamento-data[]" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                                        <button type="button" class="remove-date-button text-red-500 hover:text-red-700 hidden">
+                                            <i class="fas fa-times-circle"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button" id="add-date-button" class="mt-2 text-sm text-indigo-600 hover:text-indigo-800">
+                                    <i class="fas fa-plus-circle mr-1"></i> Adicionar outra data
+                                </button>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Horário de Início</label>
+                                <input type="time" id="agendamento-inicio" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Horário de Término</label>
+                                <input type="time" id="agendamento-fim" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Observações (opcional)</label>
+                            <textarea id="agendamento-observacoes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2" rows="2"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Adicionar Agendamento
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-lg">Visualizar Agendamentos</h3>
+                        <div class="flex space-x-2">
+                            <button id="view-list" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 text-sm">Lista</button>
+                            <button id="view-calendar" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 text-sm">Calendário</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter controls -->
+                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Filtrar por Oficina</label>
+                                <select id="filtro-oficina" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                    <option value="">Todas as oficinas</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Filtrar por Educador</label>
+                                <select id="filtro-educador" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                    <option value="">Todos os educadores</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Filtrar por Turma</label>
+                                <select id="filtro-turma" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                    <option value="">Todas as turmas</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Período</label>
+                                <select id="filtro-periodo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                    <option value="todos">Todos</option>
+                                    <option value="futuro">Próximos</option>
+                                    <option value="passado">Passados</option>
+                                    <option value="semana">Esta semana</option>
+                                    <option value="mes">Este mês</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- List view -->
+                    <div id="list-view" class="bg-white shadow rounded-lg overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horário</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Oficina</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Educador</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Turma</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="lista-agendamentos">
+                                <tr>
+                                    <td class="px-6 py-4 text-gray-500 text-sm" colspan="6">Nenhum agendamento encontrado</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Calendar view -->
+                    <div id="calendar-view" class="bg-white shadow rounded-lg p-4 hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <button id="prev-month" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                                <i class="fas fa-chevron-left mr-1"></i> Anterior
+                            </button>
+                            <h3 id="calendar-title" class="text-lg font-bold"></h3>
+                            <button id="next-month" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                                Próximo <i class="fas fa-chevron-right ml-1"></i>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1">
+                            <div class="text-center font-bold bg-gray-100 py-2">Dom</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Seg</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Ter</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Qua</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Qui</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Sex</div>
+                            <div class="text-center font-bold bg-gray-100 py-2">Sáb</div>
+                        </div>
+                        <div id="calendar-days" class="grid grid-cols-7 gap-1 mt-1">
+                            <!-- Calendar days will be generated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relatórios Section -->
+            <div id="relatorios" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Relatórios</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-lg mb-4">Carga Horária por Educador</h3>
+                        <div class="flex space-x-3 mb-4">
+                            <select id="relatorio-periodo" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                <option value="todos">Todo o período</option>
+                                <option value="mes">Este mês</option>
+                                <option value="semana">Esta semana</option>
+                            </select>
+                            <button id="gerar-relatorio-educador" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">Gerar Relatório</button>
+                        </div>
+                        <div id="relatorio-educador-result" class="bg-gray-50 p-3 rounded max-h-96 overflow-y-auto">
+                            <p class="text-gray-500">Selecione um período e clique em "Gerar Relatório"</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-lg mb-4">Oficinas mais Agendadas</h3>
+                        <div class="flex space-x-3 mb-4">
+                            <select id="relatorio-periodo-oficinas" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                                <option value="todos">Todo o período</option>
+                                <option value="mes">Este mês</option>
+                                <option value="semana">Esta semana</option>
+                            </select>
+                            <button id="gerar-relatorio-oficinas" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">Gerar Relatório</button>
+                        </div>
+                        <div id="relatorio-oficinas-result" class="bg-gray-50 p-3 rounded max-h-96 overflow-y-auto">
+                            <p class="text-gray-500">Selecione um período e clique em "Gerar Relatório"</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-4 rounded-lg shadow mb-8">
+                    <h3 class="font-bold text-lg mb-4">Agendamentos por Turma</h3>
+                    <div class="flex space-x-3 mb-4">
+                        <select id="relatorio-turma" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                            <option value="">Todas as turmas</option>
+                        </select>
+                        <select id="relatorio-periodo-turma" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white border p-2">
+                            <option value="todos">Todo o período</option>
+                            <option value="mes">Este mês</option>
+                            <option value="semana">Esta semana</option>
+                        </select>
+                        <button id="gerar-relatorio-turma" class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">Gerar Relatório</button>
+                    </div>
+                    <div id="relatorio-turma-result" class="bg-gray-50 p-3 rounded max-h-96 overflow-y-auto">
+                        <p class="text-gray-500">Selecione uma turma, um período e clique em "Gerar Relatório"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configurações Section -->
+            <div id="configuracoes" class="section hidden">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Configurações</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-lg mb-4">Exportar Dados</h3>
+                        <p class="text-gray-600 mb-4">Exporte todos os dados do sistema para um arquivo JSON que pode ser usado para backup ou transferência.</p>
+                        <button id="exportar-dados" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                            <i class="fas fa-download mr-2"></i> Exportar Dados
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-bold text-lg mb-4">Importar Dados</h3>
+                        <p class="text-gray-600 mb-4">Importe dados previamente exportados. <span class="text-red-600 font-bold">Atenção: isso substituirá todos os dados atuais!</span></p>
+                        <div class="flex flex-col space-y-4">
+                            <input type="file" id="importar-arquivo" class="block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded file:border-0
+                                file:text-sm file:font-medium
+                                file:bg-indigo-50 file:text-indigo-700
+                                hover:file:bg-indigo-100">
+                            <button id="importar-dados" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                                <i class="fas fa-upload mr-2"></i> Importar Dados
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-4 rounded-lg shadow mb-8">
+                    <h3 class="font-bold text-lg mb-4">Integrações</h3>
+                    <p class="text-gray-600 mb-4">Configure integrações com outros serviços.</p>
+                    
+                    <div class="border-t border-gray-200 pt-4 mt-4">
+                        <h4 class="font-medium text-gray-700 mb-2">Google Agenda</h4>
+                        <p class="text-gray-600 mb-4">Integre o sistema com o Google Agenda para sincronizar agendamentos.</p>
+                        <button id="conectar-google" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-50">
+                            <i class="fab fa-google text-red-500 mr-2"></i> Conectar com Google
+                        </button>
+                        <p class="text-xs text-gray-500 mt-2">Nota: Esta funcionalidade requer configuração adicional.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="font-bold text-lg mb-4">Limpar Dados</h3>
+                    <p class="text-gray-600 mb-4">Remova todos os dados do sistema. <span class="text-red-600 font-bold">Atenção: Esta ação não pode ser desfeita!</span></p>
+                    <button id="limpar-dados" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                        <i class="fas fa-trash-alt mr-2"></i> Limpar Todos os Dados
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de edição -->
+    <div id="modal-edicao" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-lg w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold" id="modal-titulo">Editar Item</h3>
+                <button id="fechar-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modal-conteudo">
+                <!-- Conteúdo dinâmico do modal -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Snackbar para notificações -->
+    <div id="snackbar" class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded shadow-lg transform transition-transform duration-300 translate-y-20 opacity-0 z-50">
+        <p id="snackbar-mensagem">Mensagem de notificação</p>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
